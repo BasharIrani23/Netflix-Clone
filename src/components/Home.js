@@ -8,10 +8,9 @@ export default function Home() {
   const fetchData = async () => {
     try {
       const res = await axios.get(
-        `https://api.themoviedb.org/3/trending/all/day?api_key=b479e5215ddddd25cb76e4840a3056b7`
+        `http://localhost:3004/trending`
       );
-
-      setResults(res.data.results);
+      setResults(res.data.results.results);
     } catch (err) {
       console.log(err);
     }

@@ -1,43 +1,61 @@
-import React, { useState } from "react";
-import ModalMovie from "./ModalMovie";
+import React, { useEffect, useState } from 'react';
+import ModalMovie from './ModalMovie';
+import { Button, Card, Col } from 'react-bootstrap';
+import { posterPath } from '../config/variables';
 
-const Movie = ({ title, overview }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [comment, setComment] = useState("");
+const Movie = ({ movie, filterMovies }) => {
+	const [showModal, setShowModal] = useState(false);
+	const [comment, setComment] = useState('');
 
-  const handleAddToFavorites = () => {
-    setShowModal(true);
-  };
+	const [myMovie, setMyMovie] = useState({});
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
+	useEffect(() => {
+		setMyMovie({ ...movie, themoviedbId: movie.id_themoviesdb ?? movie.id });
+	}, []);
 
-  const handleCommentChange = (e) => {
-    setComment(e.target.value);
-  };
+	const handleAddToFavorites = () => {
+		setShowModal(true);
+	};
 
-  return (
-    <div className="movie-card">
-      <h2>{title}</h2>
-      <p>{overview}</p>
-      <input
-        type="text"
-        placeholder="Add a comment..."
-        value={comment}
-        onChange={handleCommentChange}
-      />
-      <button onClick={handleAddToFavorites}>Add to Favorites</button>
-      {showModal && (
-        <ModalMovie
-          name={title}
-          img="https://example.com/movie-poster.jpg" // Replace with the actual movie image URL
-          comment={comment}
-          onCloseModal={handleCloseModal}
-        />
-      )}
-    </div>
-  );
+	const handleCloseModal = () => {
+		setShowModal(false);
+	};
+
+	const handleCommentChange = (e) => {
+		setComment(e.target.value);
+	};
+
+	const modalHandler = (value) => {
+		setShowModal(value);
+	};
+
+	return (
+		<Col lg={3}>
+			<Card className='movie-card'>
+				<Card.Img
+					variant='top'
+					src={`${posterPath}${movie.poster_path}`}
+				/>
+				 
+				<Card.Body>
+					<Card.Title>{movie.title}</Card.Title>
+					{movie?.overview?.length && (
+						<Card.Text>{movie.overview.slice(0, 100)}...</Card.Text>
+					)}
+					<Button onClick={handleAddToFavorites}>Add to Favorites</Button>
+				</Card.Body>
+				{showModal && (
+					<ModalMovie
+						movie={myMovie}
+						onCloseModal={handleCloseModal}
+						showModal={showModal}
+						modalHandler={modalHandler}
+						filterMovies={filterMovies}
+					/>
+				)}
+			</Card>
+		</Col>
+	);
 };
 
 export default Movie;

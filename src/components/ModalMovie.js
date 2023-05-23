@@ -47,7 +47,7 @@ function ModalMovie({ movie, showModal, modalHandler, filterMovies }) {
       axios
         .post(`${apiUrl}/addComment`, {
           movie,
-          comments: comment.trim(),
+          comment: comment.trim(),
         })
         .then((e) => {
           setComments([...comments, comment.trim()]);
